@@ -52,6 +52,6 @@ jobs:
           generateReleaseNotes: false
           makeLatest: true
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit: master
+          commit: exiled
           name: "${{ github.event.head_commit.message }} - ${{ github.sha }}"
           tag: "${{ github.run_id }}"
