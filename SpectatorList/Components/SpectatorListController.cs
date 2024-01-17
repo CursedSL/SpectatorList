@@ -68,7 +68,7 @@ public class SpectatorListController : MonoBehaviour
         if (spectators <= 0)
             return;
 
-        string hint = await Task.Run(() => _display.Draw(_player));
+        string hint = await Task.Run(() => _display.Draw(_player, spectators));
         _player.Connection.Send(new HintMessage(new TextHint(hint, new[] { new StringHintParameter(string.Empty) })));
     }
 }

@@ -13,11 +13,10 @@ public class CustomHintDisplay
 
     public void Clear() => _stringBuilder.Clear();
 
-    public string Draw(Player player)
+    public string Draw(Player player, int count)
     {
         _stringBuilder.AppendLine("<align=right><size=45%><color=" + player.Role.Color.ToHex() + '>' + EntryPoint.Instance.Config.SpectatorListTitle);
 
-        int count = 0;
         foreach (Player spectator in Player.List)
         {
             if (EntryPoint.Instance.Config.SpectatorNames.Contains("(NONE)"))
@@ -30,7 +29,6 @@ public class CustomHintDisplay
                 continue;
 
             _stringBuilder.AppendLine(EntryPoint.Instance.Config.SpectatorNames.Replace("(NAME)", spectator.Nickname));
-            count++;
         }
 
         for (int i = count; i < 30; i++)
