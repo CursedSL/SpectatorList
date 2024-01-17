@@ -1,7 +1,6 @@
 ﻿using Exiled.API.Features;
 using HarmonyLib;
 using SpectatorList.Components;
-using SpectatorList.EventHandlers;
 using System;
 
 namespace SpectatorList;
@@ -21,15 +20,12 @@ public class EntryPoint : Plugin<SpectatorListConfig>
     {
         Instance = this;
 
-        Exiled.Events.Handlers.Player.Verified += PlayerEventsHandler.OnPlayerJoined;
         SpectatorListController.RefreshRate = Instance.Config.RefreshRate;
-        Harmony.PatchAll();
+        //Harmony.PatchAll();
     }
 
     public override void OnDisabled()
     {
-        Harmony.UnpatchAll(Harmony.Id);
-        Exiled.Events.Handlers.Player.Verified -= PlayerEventsHandler.OnPlayerJoined;
         Instance = null;
     }
 

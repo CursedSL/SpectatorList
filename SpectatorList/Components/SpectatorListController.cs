@@ -18,8 +18,6 @@ public class SpectatorListController : MonoBehaviour
     private float _counter;
 
     private CustomHintDisplay _display;
-    public string savedHint = string.Empty;
-    public float savedHintCounter;
 
     public void Init(Player player) => _player = player;
 
@@ -43,23 +41,8 @@ public class SpectatorListController : MonoBehaviour
         if (_counter < RefreshRate)
             return;
 
-        UpdateHintCounter();
-
         _counter = 0;
         DrawHud();
-    }
-
-    private void UpdateHintCounter()
-    {
-        if (savedHintCounter < 0)
-            return;
-
-        savedHintCounter -= 0.5f;
-
-        if (savedHintCounter >= 0)
-            return;
-
-        savedHint = string.Empty;
     }
 
     private async void DrawHud()
@@ -85,7 +68,7 @@ public class SpectatorListController : MonoBehaviour
         if (spectators <= 0)
             return;
 
-        string hint = await Task.Run(() => _display.Draw(_player, savedHint));
+        string hint = await Task.Run(() => _display.Draw(_player));
         _player.Connection.Send(new HintMessage(new TextHint(hint, new[] { new StringHintParameter(string.Empty) })));
     }
 }

@@ -13,10 +13,8 @@ public class CustomHintDisplay
 
     public void Clear() => _stringBuilder.Clear();
 
-    public string Draw(Player player, string hint)
+    public string Draw(Player player)
     {
-        _stringBuilder.AppendLine("<size=700%>\n</size>");
-        _stringBuilder.AppendLine(FillMissingLines(hint));
         _stringBuilder.AppendLine("<align=right><size=45%><color=" + player.Role.Color.ToHex() + '>' + EntryPoint.Instance.Config.SpectatorListTitle);
 
         int count = 0;
@@ -45,15 +43,5 @@ public class CustomHintDisplay
         string ret = _stringBuilder.ToString().Replace("(COUNT)", count.ToString());
         _stringBuilder.Clear();
         return ret;
-    }
-
-    private static string FillMissingLines(string text, int linesNeeded = 6)
-    {
-        int textLines = text.Count(x => x == '\n');
-
-        for (int i = 0; i < linesNeeded - textLines; i++)
-            text += '\n';
-
-        return text;
     }
 }
