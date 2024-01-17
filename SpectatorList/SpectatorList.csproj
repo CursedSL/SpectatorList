@@ -78,6 +78,9 @@
     <Reference Include="PluginAPI, Version=13.1.2.0, Culture=neutral, processorArchitecture=Amd64">
       <HintPath>..\packages\EXILED.8.7.0\lib\net48\PluginAPI.dll</HintPath>
     </Reference>
+    <Reference Include="Pooling">
+      <HintPath>$(EXILED_REFERENCES)\Pooling.dll</HintPath>
+    </Reference>
     <Reference Include="Pooling, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
