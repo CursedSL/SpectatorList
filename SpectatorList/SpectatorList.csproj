@@ -81,7 +81,6 @@
     <Reference Include="Pooling">
       <HintPath>$(EXILED_REFERENCES)\Pooling.dll</HintPath>
     </Reference>
-    <Reference Include="Pooling, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
