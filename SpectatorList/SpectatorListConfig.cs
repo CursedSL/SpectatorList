@@ -4,6 +4,8 @@ using System.ComponentModel;
 
 namespace SpectatorList;
 
+using PlayerRoles;
+
 public sealed class SpectatorListConfig : IConfig
 {
     [Description("Whether or not the plugin is enabled on this server")]
@@ -26,6 +28,12 @@ public sealed class SpectatorListConfig : IConfig
 
     [Description("How names should be displayed. Use (NAME) to get the player's name; type (NONE) if you don't want to show their names.")]
     public string SpectatorNames { get; set; } = "(NAME)";
+
+    [Description("Set the Spectator List Title. Use (COUNT) to get the number of spectators")]
+    public string ScpListTitle { get; set; } = "<b>👥 Scps ((COUNT)):</b>";
+
+    [Description("How names should be displayed. Use (NAME) to get the player's name; (ROLE) for role; type (NONE) if you don't want to show their names.")]
+    public string ScpNames { get; set; } = "(NAME): (ROLE)";
 
     [Description("The refresh rate of the hint")]
     public float RefreshRate { get; set; } = 1;
