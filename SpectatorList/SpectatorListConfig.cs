@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace SpectatorList;
 
-using PlayerRoles;
+using AdvancedHints.Enums;
 
 public sealed class SpectatorListConfig : IConfig
 {
@@ -23,16 +23,19 @@ public sealed class SpectatorListConfig : IConfig
     [Description("List of server roles that should be ignored")]
     public HashSet<string> IgnoredRoles { get; set; } = new();
 
-    [Description("Set the Spectator List Title. Use (COUNT) to get the number of spectators")]
-    public string SpectatorListTitle { get; set; } = "<b>👥 Spectators ((COUNT)):</b>";
+    [Description("Set the spectators text. Use (COUNT) to get the number of spectators")]
+    public string Spectators { get; set; } = "<b>👥 Spectators ((COUNT))</b>";
 
-    [Description("How names should be displayed. Use (NAME) to get the player's name; type (NONE) if you don't want to show their names.")]
-    public string SpectatorNames { get; set; } = "(NAME)";
+    [Description("Where the Spectator count should be displayed")]
+    public DisplayLocation SpectatorsLocation { get; set; } = DisplayLocation.Top;
 
-    [Description("Set the Spectator List Title. Use (COUNT) to get the number of spectators")]
-    public string ScpListTitle { get; set; } = "<b>👥 Scps ((COUNT)):</b>";
+    [Description("Set the Scps text. Use (COUNT) to get the number of scps")]
+    public string Scps { get; set; } = "<b>👥 Scps ((COUNT)):</b>";
 
-    [Description("How names should be displayed. Use (NAME) to get the player's name; (ROLE) for role; type (NONE) if you don't want to show their names.")]
+    [Description("Where the Scp count should be displayed")]
+    public DisplayLocation ScpsLocation { get; set; } = DisplayLocation.MiddleBottom;
+
+    [Description("How names should be displayed. Use (NAME) to get the player's name; (ROLE) for role.")]
     public string ScpNames { get; set; } = "(NAME): (ROLE)";
 
     [Description("The refresh rate of the hint")]

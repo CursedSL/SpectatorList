@@ -1,7 +1,4 @@
 ﻿using Exiled.API.Features;
-using NorthwoodLib.Pools;
-using PlayerRoles.Spectating;
-using System.Linq;
 using System.Text;
 
 namespace SpectatorList;
@@ -9,53 +6,42 @@ namespace SpectatorList;
 // With love by Jesus-QC <3
 public class CustomHintDisplay
 {
-    private readonly StringBuilder _stringBuilder = StringBuilderPool.Shared.Rent();
+    private readonly StringBuilder _stringBuilder = new();
 
-    public void Clear() => _stringBuilder.Clear();
-
-    public string DrawHuman(Player player, Player[] spectators)
+    public string Draw(Player player, int spectators)
     {
-        _stringBuilder.AppendLine("<align=right><size=45%><color=" + player.Role.Color.ToHex() + '>' + EntryPoint.Instance.Config.SpectatorListTitle);
+        _stringBuilder.Append("<color=" + player.Role.Color.ToHex() + '>' + EntryPoint.Instance.Config.Spectators);
+        _stringBuilder.Append("</color>");
 
-        foreach (var spectator in spectators)
-        {
-            if (EntryPoint.Instance.Config.SpectatorNames.Contains("(NONE)"))
-                break;
-
-            _stringBuilder.AppendLine(EntryPoint.Instance.Config.SpectatorNames.Replace("(NAME)", spectator.Nickname));
-        }
-
-        for (int i = spectators.Length; i < 30; i++)
-            _stringBuilder.AppendLine();
-
-        _stringBuilder.Append("</color></size></align>");
-
-        string ret = _stringBuilder.Replace("(COUNT)", spectators.Length.ToString()).ToString();
+        string ret = _stringBuilder.Replace("(COUNT)", spectators.ToString()).ToString();
         _stringBuilder.Clear();
         return ret;
     }
 
-    public string DrawScp(Player player, Player[] scps)
+    private static StringBuilder _scpStringBuilder = new();
+    public static string _drawScpsCache;
+
+    public static string DrawScp(Player[] scps)
     {
-        _stringBuilder.AppendLine("<align=right><size=45%><color=" + player.Role.Color.ToHex() + '>' + EntryPoint.Instance.Config.ScpListTitle);
-
-        foreach (var scp in scps)
+        if (_drawScpsCache == null)
         {
-            if (EntryPoint.Instance.Config.ScpNames.Contains("(NONE)"))
-                break;
+            _scpStringBuilder.Append(EntryPoint.Instance.Config.Scps);
 
-            _stringBuilder.AppendLine(EntryPoint.Instance.Config.ScpNames
-                .Replace("(NAME)", scp.Nickname)
-                .Replace("(ROLE)", scp.Role.ToString()));
+            foreach (var scp in scps)
+            {
+                if (EntryPoint.Instance.Config.ScpNames.Contains("(NONE)"))
+                    break;
+
+                _scpStringBuilder.Append(EntryPoint.Instance.Config.ScpNames
+                    .Replace("(NAME)", scp.Nickname)
+                    .Replace("(ROLE)", scp.Role.Type.ToString()));
+            }
+
+            string ret = _scpStringBuilder.Replace("(COUNT)", scps.Length.ToString()).ToString();
+            _scpStringBuilder.Clear();
+            _drawScpsCache = ret;
         }
 
-        for (int i = scps.Length; i < 30; i++)
-            _stringBuilder.AppendLine();
-
-        _stringBuilder.Append("</color></size></align>");
-
-        string ret = _stringBuilder.Replace("(COUNT)", scps.Length.ToString()).ToString();
-        _stringBuilder.Clear();
-        return ret;
+        return _drawScpsCache;
     }
 }

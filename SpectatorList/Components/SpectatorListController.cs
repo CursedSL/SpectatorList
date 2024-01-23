@@ -1,5 +1,4 @@
 ﻿using Exiled.API.Features;
-using Hints;
 using PlayerRoles.Spectating;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,6 +7,7 @@ using UnityEngine;
 namespace SpectatorList.Components;
 
 using System.Linq;
+using AdvancedHints;
 
 // With love by Jesus-QC <3
 public class SpectatorListController : MonoBehaviour
@@ -26,7 +26,6 @@ public class SpectatorListController : MonoBehaviour
     private void OnDestroy()
     {
         Controllers.Remove(_player);
-        _display.Clear();
         _display = null;
     }
 
@@ -48,12 +47,12 @@ public class SpectatorListController : MonoBehaviour
             return;
         if (_player.IsScp)
             DrawHudScp();
-        else
-            DrawHudHuman();
+        DrawHud();
     }
 
-    private IEnumerable<Player> GetSpectators()
+    private int GetSpectators()
     {
+        int spectators = 0;
         foreach (var player in Player.List)
         {
             if (!_player.ReferenceHub.IsSpectatedBy(player.ReferenceHub))
@@ -65,31 +64,27 @@ public class SpectatorListController : MonoBehaviour
             if (!EntryPoint.ShouldShowPlayer(player))
                 continue;
 
-            yield return player;
+            spectators++;
         }
+
+        return spectators;
     }
 
-    private async void DrawHudHuman()
+    private async void DrawHud()
     {
-        var spectators = GetSpectators().ToArray();
-        if (spectators.Length <= 0)
+        var spectators = GetSpectators();
+        if (spectators <= 0)
             return;
 
-        string hint = await Task.Run(() => _display.DrawHuman(_player, spectators));
-        _player.Connection.Send(new HintMessage(new TextHint(hint, new[] { new StringHintParameter(string.Empty) })));
+        string hint = await Task.Run(() => _display.Draw(_player, spectators));
+        _player.ShowManagedHint(hint, displayLocation: EntryPoint.Instance.Config.SpectatorsLocation);
     }
 
     private IEnumerable<Player> GetScps()
     {
         foreach (var player in Player.List)
         {
-            if (!_player.ReferenceHub.IsSpectatedBy(player.ReferenceHub))
-                continue;
-
-            if (player.Role.Base is not SpectatorRole spectatorRole || spectatorRole.SyncedSpectatedNetId != _player.NetId)
-                continue;
-
-            if (!EntryPoint.ShouldShowPlayer(player))
+            if (!player.IsScp)
                 continue;
 
             yield return player;
@@ -99,7 +94,6 @@ public class SpectatorListController : MonoBehaviour
     private async void DrawHudScp()
     {
         var scps = GetScps().ToArray();
-        string hint = await Task.Run(() => _display.DrawScp(_player, scps));
-        _player.Connection.Send(new HintMessage(new TextHint(hint, new[] { new StringHintParameter(string.Empty) })));
+        _player.ShowManagedHint(CustomHintDisplay.DrawScp(scps), displayLocation: EntryPoint.Instance.Config.ScpsLocation);
     }
 }

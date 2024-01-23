@@ -1,32 +1,46 @@
 ﻿using Exiled.API.Features;
-using HarmonyLib;
 using SpectatorList.Components;
 using System;
 
 namespace SpectatorList;
 
+using System.Collections.Generic;
+using Exiled.Events.EventArgs.Player;
+
 public class EntryPoint : Plugin<SpectatorListConfig>
 {
     public static EntryPoint Instance { get; private set; }
 
-    public Harmony Harmony = new($"ttypiarz-spectatorlist-{DateTime.UtcNow.Ticks}");
-
     public override string Name => "SpectatorList";
     public override string Author => "TTypiarz & Jesus-QC";
     public override Version Version => new(2, 1, 0);
-    public override Version RequiredExiledVersion => new(7, 0, 0);
+    public override Version RequiredExiledVersion => new(8, 0, 0);
 
     public override void OnEnabled()
     {
+        SpectatorListController.RefreshRate = Config.RefreshRate;
         Instance = this;
 
-        SpectatorListController.RefreshRate = Instance.Config.RefreshRate;
-        //Harmony.PatchAll();
+        Exiled.Events.Handlers.Player.Verified += OnPlayerJoined;
+        Exiled.Events.Handlers.Player.ChangingRole += OnChangingRole;
     }
 
     public override void OnDisabled()
     {
+        Exiled.Events.Handlers.Player.Verified -= OnPlayerJoined;
+        Exiled.Events.Handlers.Player.ChangingRole -= OnChangingRole;
+
         Instance = null;
+    }
+
+    private static void OnPlayerJoined(VerifiedEventArgs ev)
+    {
+        ev.Player.GameObject.AddComponent<SpectatorListController>().Init(ev.Player);
+    }
+
+    private static void OnChangingRole(ChangingRoleEventArgs ev)
+    {
+        CustomHintDisplay._drawScpsCache = null;
     }
 
     public static bool ShouldShowPlayer(Player player)
